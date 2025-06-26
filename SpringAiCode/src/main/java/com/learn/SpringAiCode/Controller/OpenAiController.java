@@ -1,6 +1,7 @@
 package com.learn.SpringAiCode.Controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,23 +15,35 @@ public class OpenAiController {
 
     private ChatClient chatClient;
 
-    // constructor to inject the model
     public OpenAiController(OpenAiChatModel chatModel) {
-        // create a new chat client with the model
         this.chatClient = ChatClient.create(chatModel);
     }
 
-    // get mapping
+    /**
+     * Handle a GET request to the "/api/{message}" endpoint.
+     *
+     * @param message The message to be sent to the chat model.
+     * @return A ResponseEntity with the response from the chat model.
+     */
     @GetMapping("/{message}")
     public ResponseEntity<String> getAnswer(@PathVariable String message) {
-        // create a prompt from the message
-        String response = chatClient
+
+        // Create a ChatResponse from the chat client based on the message
+        ChatResponse chatResponse = chatClient
                 .prompt(message)
-                // make the call
                 .call()
-                // get the response content
-                .content();
-        // return the response
+                .chatResponse();
+
+        // Print the name of the model used by the chat client
+        System.out.println(chatResponse.getMetadata().getModel());
+
+        // Get the response from the chat model
+        String response = chatResponse
+                .getResult()
+                .getOutput()
+                .getText();
+
+        // Return the response as a ResponseEntity
         return ResponseEntity.ok(response);
     }
 }
