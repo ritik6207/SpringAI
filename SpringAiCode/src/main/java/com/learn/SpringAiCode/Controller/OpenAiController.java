@@ -15,8 +15,17 @@ public class OpenAiController {
 
     private ChatClient chatClient;
 
-    public OpenAiController(OpenAiChatModel chatModel) {
-        this.chatClient = ChatClient.create(chatModel);
+//    public OpenAiController(OpenAiChatModel chatModel) {
+//        this.chatClient = ChatClient.create(chatModel);
+//    }
+
+    // Constructor with ChatClient.Builder parameter,
+    // when you want
+    // to use a single chat model instead of specific OpenAiChatModel or other models
+    // than use ChatClient.Builder
+    public OpenAiController(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
+
     }
 
     /**
