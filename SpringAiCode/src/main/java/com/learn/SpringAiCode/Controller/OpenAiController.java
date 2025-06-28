@@ -4,6 +4,8 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,9 @@ import java.util.Map;
 public class OpenAiController {
 
     private ChatClient chatClient;
+
+    @Autowired
+    private EmbeddingModel embeddingModel;
 
     public OpenAiController(ChatClient.Builder builder) {
         this.chatClient = builder.build();
@@ -69,5 +74,10 @@ public class OpenAiController {
                 .content();
 
         return response;
+    }
+
+    @PostMapping("/embedding")
+    public float[] embedding(@RequestParam String text) {
+       return embeddingModel.embed(text);
     }
 }
